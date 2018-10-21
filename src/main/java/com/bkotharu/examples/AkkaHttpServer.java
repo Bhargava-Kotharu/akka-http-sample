@@ -16,7 +16,7 @@ import akka.stream.ActorMaterializer;
 import akka.stream.javadsl.Flow;
 
 public class AkkaHttpServer extends AllDirectives {
-	
+
 	// set up ActorSystem and other dependencies here
 	private final UserRoutes userRoutes;
 
@@ -29,8 +29,6 @@ public class AkkaHttpServer extends AllDirectives {
 		// #server-bootstrapping
 		// boot up server using the route as defined below
 		ActorSystem system = ActorSystem.create("helloAkkaHttpServer");
-
-		final Http http = Http.get(system);
 		final ActorMaterializer materializer = ActorMaterializer.create(system);
 		// #server-bootstrapping
 
@@ -41,8 +39,9 @@ public class AkkaHttpServer extends AllDirectives {
 		// define.
 		AkkaHttpServer app = new AkkaHttpServer(system, userActorRef);
 
-		final Flow<HttpRequest, HttpResponse, NotUsed> routeFlow = app.createRoute().flow(system, materializer);
-		final CompletionStage<ServerBinding> binding = http.bindAndHandle(routeFlow,
+		final Flow<HttpRequest, HttpResponse, NotUsed> routeFlow = app.userRoutes.routes().flow(system, materializer);
+
+		final CompletionStage<ServerBinding> binding = Http.get(system).bindAndHandle(routeFlow,
 				ConnectHttp.toHost("localhost", 8080), materializer);
 
 		System.out.println("Server is online at http://localhost:8080/");
@@ -51,16 +50,6 @@ public class AkkaHttpServer extends AllDirectives {
 		// binding.thenCompose(ServerBinding::unbind) // trigger unbinding from the port
 		// .thenAccept(unbound -> system.terminate()); // and shutdown when done
 		// #http-server
-	}
-
-	// #main-class
-	/**
-	 * Here you can define all the different routes you want to have served by this
-	 * web server Note that routes might be defined in separated classes like the
-	 * current case
-	 */
-	protected Route createRoute() {
-		return userRoutes.routes();
 	}
 
 }

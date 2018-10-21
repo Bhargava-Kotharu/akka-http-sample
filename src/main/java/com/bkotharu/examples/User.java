@@ -5,31 +5,26 @@ package com.bkotharu.examples;
  * 
  */
 public class User {
+
 	private final String name;
-	private final int age;
-	private final String countryOfResidence;
+	private final String address;
 
 	public User() {
 		this.name = "";
-		this.countryOfResidence = "";
-		this.age = 1;
+		this.address = "";
 	}
 
-	public User(String name, int age, String countryOfResidence) {
+	public User(String name, String address) {
 		this.name = name;
-		this.age = age;
-		this.countryOfResidence = countryOfResidence;
+		this.address = address;
 	}
 
 	public String getName() {
 		return name;
 	}
 
-	public int getAge() {
-		return age;
+	public String getAddress() {
+		return address;
 	}
 
-	public String getCountryOfResidence() {
-		return countryOfResidence;
-	}
 }
